@@ -4,13 +4,13 @@
 
 Are you a guy who uses Node.js REPL to quickly try out some things while coding?
 
-Do you wish if the Node.js REPL had all the NPM modules preloaded in order to ease your local tests. For an example `lodash` to do some object/array magic on your data?
+Do you wish if the Node.js REPL had all the NPM modules preloaded in order to ease your local tests? May be `lodash`, to do some object/array magic on your data?
 
-Do you wish if there's something like [RunKit](https://runkit.com) on top of the good 'ol Node REPL?
+Do you wish if the REPL was something like [RunKit](https://runkit.com)?
 
 ![](https://github.com/dpjayasekara/baapan/raw/master/docs/screenshot.png)
 
-**Baapan is a NodeJS REPL extension module which will provide a convenient 'require'-like function to dynamically install and load a module you want?**
+**Baapan is a NodeJS REPL extension module which will provide a convenient 'require'-like function to dynamically install and load a module you want!**
 
 ### How?
 
@@ -26,9 +26,10 @@ node --require baapan --experimental-repl-await
 ```
 **Important!!** Baapan relies on `async-await` in REPL, therefore you need to enable the use of `async-await` in REPL using `--experimental-repl-await` flag.
 
+
 #### Use `await baapan()` instead of `require`
 
-```js
+```
 > const lodash = await baapan('lodash')
 + lodash@4.17.11
 updated 1 package and audited 24204 packages in 2.501s
@@ -39,6 +40,24 @@ found 0 vulnerabilities
 ```
 
 Baapan will immediately download the module via `npm` and `require` it so that it's available on the REPL!!!!
+
+------------------
+
+**If you feel lazy to type the entire command everytime you need to start the REPL, just go ahead and add an alias for the command in your `~/.bashrc` or `~/.bash_profile`.**
+
+For `~/.bashrc`
+
+```
+$ echo "alias nodeb='node --require baapan --experimental-repl-await'" >> ~/.bashrc
+$ source ~/.bashrc
+```
+
+For `~/.bash_profile`
+
+```
+$ echo "alias nodeb='node --require baapan --experimental-repl-await'" >> ~/. bash_profile
+$ source ~/.bash_profile
+```
 
 -----------------
 
