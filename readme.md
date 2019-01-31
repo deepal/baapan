@@ -1,6 +1,6 @@
 # Baapan
 
-![](./docs/logo.png)
+![](https://github.com/dpjayasekara/baapan/raw/master/docs/logo.png)
 
 Are you a guy who uses Node.js REPL to quickly try out some things while coding?
 
@@ -8,7 +8,7 @@ Do you wish if the Node.js REPL had all the NPM modules preloaded in order to ea
 
 Do you wish if there's something like [RunKit](https://runkit.com) on top of the good 'ol Node REPL?
 
-![](./docs/screenshot.png)
+![](https://github.com/dpjayasekara/baapan/raw/master/docs/screenshot.png)
 
 **Baapan is a NodeJS REPL extension module which will provide a convenient 'require'-like function to dynamically install and load a module you want?**
 
