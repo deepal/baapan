@@ -41,6 +41,10 @@ found 0 vulnerabilities
 
 Baapan will immediately download the module via `npm` and `require` it so that it's available on the REPL!!!!
 
+**You can also `require` a submodule with `baapan()`. See the following:**
+
+![](https://github.com/dpjayasekara/baapan/raw/master/docs/uuid.png)
+
 ------------------
 
 **If you feel lazy to type the entire command everytime you need to start the REPL, just go ahead and add an alias for the command in your `~/.bashrc` or `~/.bash_profile`.**
