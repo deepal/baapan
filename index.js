@@ -13,9 +13,8 @@ function parsePath(module) {
     return [];
 }
 
-global.baapan = async (...args) => {
-  const module = args[0];
-  const [moduleName, subDir] = parsePath(module);
+global.baapan = async (module) => {
+  const [moduleName] = parsePath(module);
 
   if (!moduleName) {
     return console.error('Invalid module name provided!');
@@ -23,7 +22,7 @@ global.baapan = async (...args) => {
 
   return new Promise((resolve, reject) => {
     try {
-      resolve(require(...args));
+      resolve(require(module));
     } catch (err) {
       npm.load({
           loaded: false,
@@ -34,7 +33,7 @@ global.baapan = async (...args) => {
         if (err) return reject(err);
         npm.commands.install([moduleName], function (er, [[mName, mPath]]) {
           if (er) return reject(er);
-          return resolve(require(join(mPath, subDir)));
+          return resolve(require(module));
         });
       });
     }
