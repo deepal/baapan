@@ -1,9 +1,6 @@
 
 require('babel-polyfill');
 const npm = require('npm');
-const {join} = require('path');
-const Module = require('module');
-const originalRequire = Module.prototype.require;
 
 function parsePath(module) {
     if (typeof module === 'string') {
