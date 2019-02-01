@@ -1,4 +1,5 @@
 
+require('babel-polyfill');
 const npm = require('npm');
 const {join} = require('path');
 const Module = require('module');

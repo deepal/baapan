@@ -59,6 +59,8 @@ $ echo "alias nodeb='node --require baapan --experimental-repl-await'" >> ~/. ba
 $ source ~/.bash_profile
 ```
 
+**Feel free to drop any issues/feature requests/PRs at any time!!**
+
 -----------------
 
 <a href="http://cooltext.com" target="_top"><img src="https://cooltext.com/images/ct_button.gif" width="88" height="31" alt="Cool Text: Logo and Graphics Generator" /></a>

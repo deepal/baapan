@@ -4,7 +4,7 @@
   "description": "Bring all the all NPM goodness right into your REPL",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel index.js -d lib"
+    "build": "./node_modules/@babel/cli/bin/babel.js index.js -d lib"
   },
   "author": "Deepal Jayasekara <dpjayasekara@gmail.com>",
   "license": "ISC",
@@ -14,6 +14,7 @@
   "devDependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "7.2.2",
-    "@babel/preset-env": "7.3.1"
+    "@babel/preset-env": "7.3.1",
+    "babel-polyfill": "6.26.0"
   }
 }
