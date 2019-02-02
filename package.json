@@ -1,6 +1,6 @@
 {
   "name": "baapan",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Bring all the all NPM goodness right into your REPL",
   "main": "lib/index.js",
   "scripts": {
