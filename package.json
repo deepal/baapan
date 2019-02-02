@@ -12,6 +12,18 @@
     "npm": "6.7.0",
     "babel-polyfill": "6.26.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dpjayasekara/baapan.git"
+  },
+  "keywords": [
+    "boostnote",
+    "github"
+  ],
+  "bugs": {
+    "url": "https://github.com/dpjayasekara/baapan/issues"
+  },
+  "homepage": "https://github.com/dpjayasekara/baapan#readme",
   "devDependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "7.2.2",
