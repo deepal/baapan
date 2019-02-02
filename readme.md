@@ -14,7 +14,9 @@ If you feel you need an NPM module to quickly test something (e.g, `lodash` to d
 
 ### How?
 
-#### Step 1: Install baapan
+#### Step 1: Install baapan on your home directory
+
+Navigate to your home directory, and run:
 
 ```sh
 npm install baapan
