@@ -4,6 +4,8 @@
 
 **Baapan brings the all of the NPM goodness right into your REPL. On-demand!!.**
 
+> `baapan` only works on Node.js v10.x.x or above as it requires REPL to be started with `--experimental-repl-await` flag.
+
 Using Node REPL for quick local testing is a common practice among JavaScript/Node developers. But the problem with the REPL is, you don't have the luxury to take advantage of the entire NPM ecosystem out-of-the-box. 
 
 If you feel you need an NPM module to quickly test something (e.g, `lodash` to do some quick object/array manipulation, `uuid` to quickly generate some uuid), you'll have to manually install it via NPM and load it onto the REPL.
