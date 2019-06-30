@@ -3,8 +3,7 @@ import os from 'os';
 import path from 'path';
 import {mkdirSync, statSync} from 'fs';
 import repl from 'repl';
-import {execSync} from 'child_process'
-import 'colors';
+import {execSync} from 'child_process';
 
 const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = '.baapan/workspace';
