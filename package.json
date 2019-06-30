@@ -11,6 +11,7 @@
   "author": "Deepal Jayasekara <dpjayasekara@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "mkdirp": "0.5.1",
     "semver": "6.1.2"
   },
   "repository": {

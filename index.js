@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import os from 'os';
 import path from 'path';
-import {mkdirSync, statSync} from 'fs';
+import {statSync} from 'fs';
+import mkdirp from 'mkdirp';
 import repl from 'repl';
 import {execSync} from 'child_process';
 
@@ -30,7 +31,7 @@ function initializeWorkspace(wsPath) {
  * @param {string} wsPath Workspace path
  */
 function createWorkspace(wsPath) {
-  mkdirSync(wsPath, {recursive: true});
+  mkdirp.sync(wsPath);
   process.chdir(wsPath);
 }
 
