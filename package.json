@@ -3,30 +3,36 @@
   "version": "1.0.9",
   "description": "Bring all the all NPM goodness right into your REPL",
   "main": "lib/index.js",
+  "bin": "lib/index.js",
+  "test": "",
   "scripts": {
     "build": "./node_modules/@babel/cli/bin/babel.js index.js -d lib"
   },
   "author": "Deepal Jayasekara <dpjayasekara@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "npm": "6.7.0",
-    "babel-polyfill": "6.26.0"
+    "semver": "6.1.2"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dpjayasekara/baapan.git"
   },
   "keywords": [
-    "boostnote",
-    "github"
+    "npm",
+    "runkit"
   ],
   "bugs": {
     "url": "https://github.com/dpjayasekara/baapan/issues"
   },
   "homepage": "https://github.com/dpjayasekara/baapan#readme",
   "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.2.2",
-    "@babel/preset-env": "7.3.1"
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.5",
+    "@babel/preset-env": "7.4.5",
+    "@babel/register": "7.4.4"
+  },
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
   }
 }
