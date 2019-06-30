@@ -1,6 +1,6 @@
 {
   "name": "baapan",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Bring all the all NPM goodness right into your REPL",
   "main": "lib/index.js",
   "bin": "lib/index.js",
