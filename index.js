@@ -5,6 +5,7 @@ import {statSync} from 'fs';
 import mkdirp from 'mkdirp';
 import repl from 'repl';
 import {execSync} from 'child_process';
+import { Module } from 'module';
 
 const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = '.baapan/workspace';
@@ -58,7 +59,6 @@ function switchToWorkspace(wsPath) {
  * @param {string} moduleName Module name
  */
 function installModule(moduleName) {
-  console.log(`Baapan '${moduleName}' into the workspace!!`);
   execSync(`npm install --silent --save-exact ${moduleName}`);
 }
 
@@ -80,6 +80,19 @@ function parseModulePath(moduleStr) {
     return [];
 }
 
+function getAbsoluteModulePath(pkgName) {
+  const [moduleName] = parseModulePath(pkgName);
+
+  if (!moduleName) {
+    return console.error('Invalid module name provided!');
+  }
+
+  return {
+    path: path.join(process.cwd(), './node_modules', pkgName),
+    name: moduleName
+  };
+}
+
 /**
  * Load a module or install it an load if not already installed
  * @param {string} pkgName Module name to require
@@ -98,10 +111,30 @@ function baapan (pkgName) {
     installModule(moduleName);
   }
 
-  try {
-    return require(absoluteModulePath);
-  } catch (err) {
-    console.log(`Could not load module '${pkgName}'`);
+  return require(absoluteModulePath);
+}
+
+function wrapRequire() {
+  const originalRequire = Module.prototype.require;
+
+  Module.prototype.require = function(moduleName, ...args) {
+    const isLocalModule = /^[\/\.]/.test(moduleName);
+    const isNativeModule = process.binding("natives").hasOwnProperty(moduleName);
+
+    if (isLocalModule || isNativeModule) {
+      return originalRequire.call(this, moduleName, ...args);
+    }
+
+    const requiredModule = getAbsoluteModulePath(moduleName);
+
+    try {
+      require.resolve(requiredModule.path);
+    } catch (err) {
+      // module not found
+      console.log(requiredModule.name)
+      installModule(requiredModule.name);
+    }
+    return originalRequire.call(this, requiredModule.path, ...args);
   }
 }
 
@@ -110,6 +143,7 @@ function baapan (pkgName) {
  */
 function startRepl() {
   switchToWorkspace(workspacePath);
+  wrapRequire();
   const replServer = repl.start('> ');
   replServer.context.baapan = baapan;
 }
