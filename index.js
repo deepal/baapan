@@ -95,25 +95,17 @@ function getAbsoluteModulePath(pkgName) {
 
 /**
  * Load a module or install it an load if not already installed
+ * @deprecated
  * @param {string} pkgName Module name to require
  */
 function baapan (pkgName) {
-  const [moduleName] = parseModulePath(pkgName);
-
-  if (!moduleName) {
-    return console.error('Invalid module name provided!');
-  }
-
-  const absoluteModulePath = path.join(process.cwd(), './node_modules', pkgName);
-  try {
-    require.resolve(absoluteModulePath);
-  } catch (err) {
-    installModule(moduleName);
-  }
-
-  return require(absoluteModulePath);
+  console.warn('use of \'baapan()\' is deprecated! You can now directly use \'require()\' instead. Isn\'t that cool?');
+  return require(pkgName);
 }
 
+/**
+ * Wrap require() calls to dynamically install modules on-demand
+ */
 function wrapRequire() {
   const originalRequire = Module.prototype.require;
 
@@ -131,7 +123,6 @@ function wrapRequire() {
       require.resolve(requiredModule.path);
     } catch (err) {
       // module not found
-      console.log(requiredModule.name)
       installModule(requiredModule.name);
     }
     return originalRequire.call(this, requiredModule.path, ...args);

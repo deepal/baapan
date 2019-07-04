@@ -10,13 +10,15 @@ An alternative is, using something like RunKit. But fiddling with sensitive data
 
 While using Node REPL, if you feel you need an NPM module to quickly test something (e.g, `lodash` to do some quick object/array manipulation, `uuid` to quickly generate some uuid), you'll have to manually install it via NPM and load it onto the REPL.
 
-**Baapan** is a replacement for `require()` in node REPL. If the module you need is not installed locally, it will immediately grab it from NPM and load it to the console. Effortless! ✨😎!!
+### Here's the cool part!!
 
-![](https://github.com/dpjayasekara/baapan/raw/master/docs/screenshot.png)
+Baapan intercepts `require()` calls and automatically install the module if the module is not locally available. You can `require()` whatever you want, and Baapan will `require()` it for you? Don't you think it's cool??
 
-### How?
+![](https://github.com/dpjayasekara/baapan/raw/master/docs/baapan.gif)
 
-#### Step 1: Install baapan on your home directory
+### Getting Started
+
+#### Step 1: Install baapan globally
 
 Simply run:
 
@@ -25,30 +27,27 @@ npm install -g baapan
 ```
 This will install `baapan` CLI command.
 
-#### Step 2: Load baapan with REPL
+#### Step 2: Load Baapan
+
+You can launch Baapan by just running `baapan` command on terminal after installation. `baapan` will launch the NodeJS REPL for you.
 
 ```sh
 $ baapan
 ```
 
-#### Step 3: Use `baapan` instead of `require`
+#### That's it. You can now require() everything you want!!
+
+This time I need to generate a random IP address. I can require `chance` to do that.
 
 ```
 Creating workspace...
 Initializing workspace...
 Workspace loaded!
-> const lodash = baapan('lodash')
-Baapan 'lodash' into the workspace!!
+> const chance = require('chance').Chance()
 undefined
-> lodash.concat([1], [2,3], 4)
-[ 1, 2, 3, 4 ]
+> chance.ip()
+'213.15.210.129'
 ```
-
-Baapan will immediately download the module via `npm` and `require` it immediately so that it's available on the REPL!!!!
-
-**You can also `require` a submodule with `baapan()`. See the following:**
-
-![](https://github.com/dpjayasekara/baapan/raw/master/docs/uuid.png)
 
 
 **Feel free to drop any issues/feature requests/PRs at any time!!**
