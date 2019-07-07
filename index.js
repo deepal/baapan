@@ -6,6 +6,7 @@ import mkdirp from 'mkdirp';
 import repl from 'repl';
 import { execSync } from 'child_process';
 import { Module } from 'module';
+import 'colors';
 
 const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
@@ -21,7 +22,7 @@ function initializeWorkspace(wsPath) {
   try {
     statSync(path.join(wsPath, 'package.json'));
   } catch (err) {
-    console.log('Initializing workspace...');
+    console.info('Initializing workspace...'.grey);
     if (err.code === 'ENOENT') {
       execSync('npm init -y --scope baapan');
     }
@@ -56,10 +57,10 @@ function switchToWorkspace(wsPath) {
   } catch (err) {
     // Do nothing
   } finally {
-    console.log('Creating workspace...');
+    console.info('Creating workspace...'.grey);
     createWorkspace(wsPath);
     initializeWorkspace(wsPath);
-    console.log('Workspace loaded!');
+    console.info('Workspace loaded!'.grey);
   }
 }
 
@@ -68,7 +69,9 @@ function switchToWorkspace(wsPath) {
  * @param {string} moduleName Module name
  */
 function installModule(moduleName) {
+  console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
   execSync(`npm install --silent ${moduleName}`);
+  console.log('Done!'.grey.italic);
 }
 
 /**
@@ -176,7 +179,7 @@ function getModuleInfo(requiredPath) {
  * @param {string} pkgName Module name to require
  */
 function baapan(pkgName) {
-  console.warn('use of \'baapan()\' is deprecated! You can now directly use \'require()\' instead. Isn\'t that cool?');
+  console.warn('use of \'baapan()\' is deprecated! You can now directly use \'require()\' instead. Isn\'t that cool?'.yellow);
   return require(pkgName);
 }
 
@@ -196,6 +199,7 @@ function wrapRequire() {
       return originalRequire.apply(this, [moduleName]);
     } catch (err) {
       if (!moduleInfo.isThirdPartyModule) throw new Error('attempted module to install appears to be a local or native module');
+
       installModule(moduleInfo.path);
       return originalRequire.apply(this, [
         path.join(workspacePath, 'node_modules', moduleName),
@@ -215,7 +219,7 @@ function startRepl() {
 }
 
 process.on('exit', () => {
-  console.info('Cleaning up workspace...');
+  console.info('Cleaning up workspace...'.grey);
   cleanUpWorkspace(workspacePath);
 });
 
