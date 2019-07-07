@@ -1,0 +1,9 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "func-names": "off",
+        "no-console": "off"
+    }
+}
