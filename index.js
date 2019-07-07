@@ -71,6 +71,10 @@ function installModule(moduleName) {
   execSync(`npm install --silent ${moduleName}`);
 }
 
+/**
+ * Get call site
+ * @returns {string}
+ */
 function callerFile() {
   const orig = Error.prepareStackTrace;
   Error.prepareStackTrace = function (_, stack) { return stack; }; // eslint-disable-line func-names
@@ -92,10 +96,18 @@ function callerFile() {
   return null;
 }
 
+/**
+ * Check whether the provided module name is a local module
+ * @param {string} moduleName
+ */
 function isLocalModule(moduleName) {
   return /^[/.]/.test(moduleName);
 }
 
+/**
+ * Check whether the provided module is a native node module
+ * @param {string} moduleName
+ */
 function isNativeModule(moduleName) {
   return Object.prototype.hasOwnProperty.call(
     process.binding('natives'),
@@ -103,11 +115,19 @@ function isNativeModule(moduleName) {
   );
 }
 
+/**
+ * Get module absolute path
+ * @param {string} modulePath
+ */
 function getModuleAbsPath(modulePath) {
   const caller = callerFile();
   return path.join(path.dirname(caller), modulePath);
 }
 
+/**
+ * Get module details from the require'd path
+ * @param {string} requiredPath
+ */
 function getModuleInfo(requiredPath) {
   let moduleInfo = {
     path: '',
