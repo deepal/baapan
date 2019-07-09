@@ -14,35 +14,19 @@ const launchDir = process.cwd();
 const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
 
-/**
- * Change directory to the workspace
- */
-function enterWorkspace() {
-  process.chdir(workspacePath);
-}
-
-/**
- * Change directory to the launch directory
- */
-function exitWorkspace() {
-  process.chdir(launchDir);
-}
-
+process.env.BAAPAN_WS_PATH = workspacePath;
 /**
  * Initialize workspace as an npm project
  * @param {string} wsPath Workspace Path
  */
 function initializeWorkspace(wsPath) {
-  enterWorkspace();
   try {
     statSync(path.join(wsPath, 'package.json'));
   } catch (err) {
     console.info('Initializing workspace...'.grey);
     if (err.code === 'ENOENT') {
-      execSync('npm init -y --scope baapan');
+      execSync('npm init -y --scope baapan', { cwd: workspacePath });
     }
-  } finally {
-    exitWorkspace();
   }
 }
 
@@ -85,16 +69,9 @@ function switchToWorkspace(wsPath) {
  * @param {string} moduleName Module name
  */
 function installModule(moduleName) {
-  enterWorkspace();
-  try {
-    console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
-    execSync(`npm install --silent ${moduleName}`);
-    console.info('Done!'.grey.italic);
-  } catch (err) {
-    throw err;
-  } finally {
-    exitWorkspace();
-  }
+  console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
+  execSync(`npm install --silent ${moduleName}`, { cwd: workspacePath });
+  console.info('Done!'.grey.italic);
 }
 
 /**
