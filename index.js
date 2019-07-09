@@ -10,15 +10,30 @@ import 'colors';
 
 const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
+const launchDir = process.cwd();
 const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
+
+/**
+ * Change directory to the workspace
+ */
+function enterWorkspace() {
+  process.chdir(workspacePath);
+}
+
+/**
+ * Change directory to the launch directory
+ */
+function exitWorkspace() {
+  process.chdir(launchDir);
+}
 
 /**
  * Initialize workspace as an npm project
  * @param {string} wsPath Workspace Path
  */
 function initializeWorkspace(wsPath) {
-  process.chdir(wsPath);
+  enterWorkspace();
   try {
     statSync(path.join(wsPath, 'package.json'));
   } catch (err) {
@@ -26,6 +41,8 @@ function initializeWorkspace(wsPath) {
     if (err.code === 'ENOENT') {
       execSync('npm init -y --scope baapan');
     }
+  } finally {
+    exitWorkspace();
   }
 }
 
@@ -43,7 +60,6 @@ function cleanUpWorkspace(wsPath) {
  */
 function createWorkspace(wsPath) {
   mkdirp.sync(wsPath);
-  process.chdir(wsPath);
 }
 
 /**
@@ -69,9 +85,16 @@ function switchToWorkspace(wsPath) {
  * @param {string} moduleName Module name
  */
 function installModule(moduleName) {
-  console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
-  execSync(`npm install --silent ${moduleName}`);
-  console.log('Done!'.grey.italic);
+  enterWorkspace();
+  try {
+    console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
+    execSync(`npm install --silent ${moduleName}`);
+    console.info('Done!'.grey.italic);
+  } catch (err) {
+    throw err;
+  } finally {
+    exitWorkspace();
+  }
 }
 
 /**
@@ -188,7 +211,6 @@ function baapan(pkgName) {
  */
 function wrapRequire() {
   const originalRequire = Module.prototype.require;
-  require.resolve.paths = [path.join(workspacePath, 'node_modules')];
   Module.prototype.require = function (moduleName) {
     // Inject workspace node_modules directory
     this.paths.unshift(workspaceModulesDir);
@@ -198,7 +220,7 @@ function wrapRequire() {
     try {
       return originalRequire.apply(this, [moduleName]);
     } catch (err) {
-      if (!moduleInfo.isThirdPartyModule) throw new Error('attempted module to install appears to be a local or native module');
+      if (!moduleInfo.isThirdPartyModule) throw err;
 
       installModule(moduleInfo.path);
       return originalRequire.apply(this, [
