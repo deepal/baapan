@@ -3,6 +3,7 @@ import os from 'os';
 import path from 'path';
 import { statSync } from 'fs';
 import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 import repl from 'repl';
 import { execSync } from 'child_process';
 import { Module } from 'module';
@@ -10,7 +11,6 @@ import 'colors';
 
 const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
-const launchDir = process.cwd();
 const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
 
@@ -35,7 +35,7 @@ function initializeWorkspace(wsPath) {
  * @param {string} wsPath
  */
 function cleanUpWorkspace(wsPath) {
-  execSync(`rm -rf ${wsPath}`);
+  rimraf.sync(wsPath);
 }
 
 /**
