@@ -1,6 +1,6 @@
 {
   "name": "baapan",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "Super Cool NPM Playground right on the Node REPL",
   "main": "lib/index.js",
   "bin": "lib/index.js",
