@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import os from 'os';
 import path from 'path';
-import { statSync } from 'fs';
+import { statSync, readFileSync, appendFileSync, writeFileSync} from 'fs';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 import repl from 'repl';
@@ -13,6 +13,7 @@ const HOME_DIR = os.homedir();
 const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
 const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
+const replHistoryPath = path.join(HOME_DIR, '.node_repl_history');
 
 process.env.BAAPAN_WS_PATH = workspacePath;
 /**
@@ -207,6 +208,37 @@ function wrapRequire() {
   };
 }
 
+function addReplListener(server) {
+  process.stdin.on('keypress', (str, key) => {
+    if (key.ctrl && key.name === 'c') {
+      process.exit();
+    } 
+    else if(!key.ctrl && key.name === 'return'){
+      try{
+        const newReplLine = server.history[0] + '\n';
+        writeFileSync(replHistoryPath, newReplLine); //write new repl line to the begining of file
+        appendFileSync(replHistoryPath, server.history.join('\n')); //append old repl history
+      }
+      catch(err) {
+        throw err;
+      }
+    }
+  });
+}
+
+function fetchReplHistory(server) {
+  try {
+    statSync(replHistoryPath);
+    readFileSync(replHistoryPath).toString()
+      .split('\n')
+      .filter(line => line.trim())
+      .map(line => server.history.push(line));
+  }
+  catch(err) {
+    throw err;
+  }
+}
+
 /**
  * Start baapan REPL
  */
@@ -215,6 +247,8 @@ function startRepl() {
   wrapRequire();
   const replServer = repl.start('> ');
   replServer.context.baapan = baapan;
+  fetchReplHistory(replServer);  
+  addReplListener(replServer);
 }
 
 process.on('exit', () => {
