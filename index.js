@@ -9,12 +9,16 @@ import { execSync } from 'child_process';
 import { Module } from 'module';
 import 'colors';
 
-const HOME_DIR = os.homedir();
-const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
-const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
+let workspacePath = process.env.BAAPAN_WS_PATH;
+if (!process.env.BAAPAN_WS_PATH) {
+  const HOME_DIR = os.homedir();
+  const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
+  workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
+  process.env.BAAPAN_WS_PATH = workspacePath;
+}
+
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
 
-process.env.BAAPAN_WS_PATH = workspacePath;
 /**
  * Initialize workspace as an npm project
  * @param {string} wsPath Workspace Path
@@ -211,6 +215,7 @@ function wrapRequire() {
  * Start baapan REPL
  */
 function startRepl() {
+  console.log(workspacePath);
   switchToWorkspace(workspacePath);
   wrapRequire();
   const replServer = repl.start('> ');
