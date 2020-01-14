@@ -6,7 +6,7 @@
   "bin": "lib/index.js",
   "test": "",
   "scripts": {
-    "build": "node ./node_modules/@babel/cli/bin/babel.js index.js -d lib"
+    "build": "./node_modules/@babel/cli/bin/babel.js index.js -d lib"
   },
   "author": "Deepal Jayasekara <dpjayasekara@gmail.com>",
   "license": "ISC",
