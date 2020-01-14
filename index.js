@@ -41,7 +41,7 @@ function initializeWorkspace(wsPath) {
  * @param {string} wsPath
  */
 function cleanUpWorkspace(wsPath) {
-  rimraf.sync(wsPath);
+  if (cleanup) rimraf.sync(wsPath);
 }
 
 /**
@@ -59,7 +59,7 @@ function createWorkspace(wsPath) {
 function switchToWorkspace(wsPath) {
   try {
     // Attempt to clean up any existing workspace
-    if (cleanup) cleanUpWorkspace(wsPath);
+    cleanUpWorkspace(wsPath);
   } catch (err) {
     // Do nothing
   } finally {
