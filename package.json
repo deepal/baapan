@@ -3,10 +3,10 @@
   "version": "3.3.0",
   "description": "Super Cool NPM Playground right on the Node REPL",
   "main": "lib/index.js",
-  "bin": "lib/index.js",
+  "bin": "bin/start.js",
   "test": "",
   "scripts": {
-    "build": "./node_modules/@babel/cli/bin/babel.js index.js -d lib"
+    "build": "node ./node_modules/@babel/cli/bin/babel.js index.js -d lib"
   },
   "author": "Deepal Jayasekara <dpjayasekara@gmail.com>",
   "license": "ISC",
