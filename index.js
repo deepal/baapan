@@ -10,13 +10,11 @@ import { Module } from 'module';
 import 'colors';
 
 let workspacePath = process.env.BAAPAN_WS_PATH;
-let shouldCleanup = false;
 if (!process.env.BAAPAN_WS_PATH) {
   const HOME_DIR = os.homedir();
   const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
   workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
   process.env.BAAPAN_WS_PATH = workspacePath;
-  shouldCleanup = true;
 }
 
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
@@ -217,6 +215,7 @@ function wrapRequire() {
  * Start baapan REPL
  */
 function startRepl() {
+  console.log(workspacePath);
   switchToWorkspace(workspacePath);
   wrapRequire();
   const replServer = repl.start('> ');
