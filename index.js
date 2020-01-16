@@ -10,13 +10,13 @@ import { Module } from 'module';
 import 'colors';
 
 let workspacePath = process.env.BAAPAN_WS_PATH;
-let cleanup = false;
+let shouldCleanup = false;
 if (!process.env.BAAPAN_WS_PATH) {
   const HOME_DIR = os.homedir();
   const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
   workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
   process.env.BAAPAN_WS_PATH = workspacePath;
-  cleanup = true;
+  shouldCleanup = true;
 }
 
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
@@ -41,7 +41,7 @@ function initializeWorkspace(wsPath) {
  * @param {string} wsPath
  */
 function cleanUpWorkspace(wsPath) {
-  if (cleanup) rimraf.sync(wsPath);
+  rimraf.sync(wsPath);
 }
 
 /**
@@ -59,7 +59,7 @@ function createWorkspace(wsPath) {
 function switchToWorkspace(wsPath) {
   try {
     // Attempt to clean up any existing workspace
-    cleanUpWorkspace(wsPath);
+    if (shouldCleanup) cleanUpWorkspace(wsPath);
   } catch (err) {
     // Do nothing
   } finally {
@@ -224,12 +224,8 @@ function startRepl() {
 }
 
 process.on('exit', () => {
-  if (shouldCleanup) {
-    console.info('Cleaning up workspace...'.grey);
-    cleanUpWorkspace(workspacePath);
-  } else {
-    console.info(`Workspace ${process.env.BAAPAN_WS_PATH} preserved!`.grey);
-  }
+  console.info('Cleaning up workspace...'.grey);
+  if (shouldCleanup) cleanUpWorkspace(workspacePath);
 });
 
 startRepl();
