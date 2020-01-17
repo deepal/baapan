@@ -17,16 +17,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dpjayasekara/baapan.git"
+    "url": "git+https://github.com/deepal/baapan.git"
   },
   "keywords": [
     "npm",
     "runkit"
   ],
   "bugs": {
-    "url": "https://github.com/dpjayasekara/baapan/issues"
+    "url": "https://github.com/deepal/baapan/issues"
   },
-  "homepage": "https://github.com/dpjayasekara/baapan#readme",
+  "homepage": "https://github.com/deepal/baapan#readme",
   "devDependencies": {
     "@babel/cli": "7.6.0",
     "@babel/core": "7.6.0",
