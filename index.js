@@ -9,12 +9,18 @@ import { execSync } from 'child_process';
 import { Module } from 'module';
 import 'colors';
 
-const HOME_DIR = os.homedir();
-const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
-const workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
+let workspacePath = process.env.BAAPAN_WS_PATH;
+let shouldCleanup = false;
+if (!process.env.BAAPAN_WS_PATH) {
+  const HOME_DIR = os.homedir();
+  const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
+  workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
+  process.env.BAAPAN_WS_PATH = workspacePath;
+  shouldCleanup = true;
+}
+
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
 
-process.env.BAAPAN_WS_PATH = workspacePath;
 /**
  * Initialize workspace as an npm project
  * @param {string} wsPath Workspace Path
@@ -53,7 +59,7 @@ function createWorkspace(wsPath) {
 function switchToWorkspace(wsPath) {
   try {
     // Attempt to clean up any existing workspace
-    cleanUpWorkspace(wsPath);
+    if (shouldCleanup) cleanUpWorkspace(wsPath);
   } catch (err) {
     // Do nothing
   } finally {
@@ -219,7 +225,7 @@ function startRepl() {
 
 process.on('exit', () => {
   console.info('Cleaning up workspace...'.grey);
-  cleanUpWorkspace(workspacePath);
+  if (shouldCleanup) cleanUpWorkspace(workspacePath);
 });
 
 startRepl();

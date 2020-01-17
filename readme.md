@@ -63,6 +63,20 @@ e.g,
 '/Users/djayasekara/.baapan/workspace_44023_1562678000424'
 ``` 
 
+#### Persist Workspace And Modules
+Baapan tries to find `BAAPAN_WS_PATH` in your env on startup. If `BAAPAN_WS_PATH` is not set a new workspace is created everytime you start baapan. You can persist the workspace and modules you've installed by setting `BAAPAN_WS_PATH` env variable to the desired directory.
+
+e.g.
+
+```
+$ set process.env.BAAPAN_WS_PATH=D:\nodejs\baapan-modules-repo
+$ baapan
+Creating workspace...
+Workspace loaded!
+> process.env.BAAPAN_WS_PATH
+'D:\\nodejs\\baapan-modules-repo'
+```
+
 **Feel free to drop any issues/feature requests/PRs at any time!!**
 
 -----------------
