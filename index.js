@@ -224,8 +224,12 @@ function startRepl() {
 }
 
 process.on('exit', () => {
-  console.info('Cleaning up workspace...'.grey);
-  if (shouldCleanup) cleanUpWorkspace(workspacePath);
+  if (shouldCleanup) {
+    console.info('Cleaning up workspace...'.grey);
+    cleanUpWorkspace(workspacePath);
+  } else {
+    console.info(`Workspace ${process.env.BAAPAN_WS_PATH} preserved!`.grey);
+  }
 });
 
 startRepl();
