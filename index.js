@@ -225,7 +225,7 @@ function persistReplHistory(server) {
         writeFileSync(replHistoryPath, server.history.join('\n')); // write new server history to repl
       } catch (err) {
         // can ignore this error.
-        // error in writing history should not terminate the execution of code */
+        // error in writing history should not terminate the execution of code
       }
     }
   });
