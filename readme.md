@@ -49,8 +49,9 @@ undefined
 '213.15.210.129'
 ```
 
-### Supports Top Level Await
-Baapan support top level from node v10 and above. You can enable it by passing `--experimental-repl-await` as command line argument.  
+### Supports Top-Level REPL Await
+Baapan supports [top-level REPL `await`](https://nodejs.org/api/repl.html#repl_await_keyword) from node v10 and above. You can enable it by passing `--experimental-repl-await` argument as follows:
+
 e.g.  
 ```
 $ baapan --experimental-repl-await
