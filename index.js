@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import os from 'os';
 import path from 'path';
-import { statSync } from 'fs';
+import { statSync, readFileSync, writeFileSync } from 'fs';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 import repl from 'repl';
@@ -11,8 +11,8 @@ import 'colors';
 
 let workspacePath = process.env.BAAPAN_WS_PATH;
 let shouldCleanup = false;
+const HOME_DIR = os.homedir();
 if (!process.env.BAAPAN_WS_PATH) {
-  const HOME_DIR = os.homedir();
   const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
   workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
   process.env.BAAPAN_WS_PATH = workspacePath;
@@ -20,6 +20,7 @@ if (!process.env.BAAPAN_WS_PATH) {
 }
 
 const workspaceModulesDir = path.join(workspacePath, 'node_modules');
+let replHistoryPath = path.join(HOME_DIR, '.node_repl_history');
 
 /**
  * Initialize workspace as an npm project
@@ -214,13 +215,56 @@ function wrapRequire() {
 }
 
 /**
+ * Add entered line to repl history
+ * @param {Object} server
+ */
+function persistReplHistory(server) {
+  process.stdin.on('keypress', (str, key) => {
+    if (key.name === 'return') {
+      try {
+        writeFileSync(replHistoryPath, server.history.join('\n')); // write new server history to repl
+      } catch (err) {
+        // can ignore this error.
+        // error in writing history should not terminate the execution of code */
+      }
+    }
+  });
+}
+
+/**
+ * Initialize baapan repl history
+ * @param {Object} server
+ */
+function initializeReplHistory(server) {
+  try {
+    readFileSync(replHistoryPath).toString()
+      .split('\n')
+      .filter(line => line.trim())
+      .map(line => server.history.push(line));
+  } catch (err) {
+    // can ignore this error.
+    // error in persist history should not terminate the execution of code */
+  }
+}
+
+/**
  * Start baapan REPL
  */
 function startRepl() {
   switchToWorkspace(workspacePath);
   wrapRequire();
-  const replServer = repl.start('> ');
+  // if history size is specified and is positive, set as max repl history size. default is 1000
+  const replHistorySize = +process.env.NODE_REPL_HISTORY_SIZE || 1000;
+  const replServer = repl.start({ prompt: '> ', historySize: replHistorySize });
   replServer.context.baapan = baapan;
+
+  // repl history should persist only if it's enabled
+  if (process.env.NODE_REPL_HISTORY === undefined || process.env.NODE_REPL_HISTORY !== '') {
+    // if specified, set user specified path to node repl history
+    if (process.env.NODE_REPL_HISTORY) replHistoryPath = process.env.NODE_REPL_HISTORY;
+    initializeReplHistory(replServer);
+    persistReplHistory(replServer);
+  }
 }
 
 process.on('exit', () => {
