@@ -7,6 +7,8 @@ require('child_process').spawn(process.argv.shift(), [libPath], {
   cwd: process.cwd(),
   env: {
     NODE_OPTIONS: '--experimental-repl-await',
+    ...process.env,
   },
   stdio: 'inherit',
+  windowsHide: true,
 });

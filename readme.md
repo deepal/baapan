@@ -48,6 +48,19 @@ undefined
 > chance.ip()
 '213.15.210.129'
 ```
+
+### Supports Top Level Await
+Baapan support top level from node v10 and above.
+
+```
+$ baapan
+Creating workspace...
+Workspace loaded!
+> await Promise.resolve('It works')
+'It works'
+>    
+```
+
 ### Baapan Workspace
 
 Every instance of `baapan` REPL server has its own workspace independent of each other. All module installations are done within the boundary of the workspace. This helps you open multiple `baapan` REPLs at once, install different modules without any conflicts. Current workspace for the REPL is automatically cleaned-up when you _gracefully_ exit the REPL shell (e.g, pressing `ctrl+c` twice or `.exit` command). 
