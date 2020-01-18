@@ -50,10 +50,10 @@ undefined
 ```
 
 ### Supports Top Level Await
-Baapan support top level from node v10 and above.
-
+Baapan support top level from node v10 and above. You can enable it by passing `--experimental-repl-await` as command line argument.  
+e.g.  
 ```
-$ baapan
+$ baapan --experimental-repl-await
 Creating workspace...
 Workspace loaded!
 > await Promise.resolve('It works')
