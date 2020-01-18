@@ -243,7 +243,7 @@ function initializeReplHistory(server) {
       .map(line => server.history.push(line));
   } catch (err) {
     // can ignore this error.
-    // error in persist history should not terminate the execution of code */
+    // error in persist history should not terminate the execution of code
   }
 }
 
