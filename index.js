@@ -217,7 +217,6 @@ function wrapRequire() {
  * Start baapan REPL
  */
 function startRepl() {
-  console.log(workspacePath);
   switchToWorkspace(workspacePath);
   wrapRequire();
   const replServer = repl.start('> ');
