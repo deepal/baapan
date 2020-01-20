@@ -59,7 +59,7 @@ export function switchToWorkspace(wsPath, { cleanUp = true } = {}) {
  * Install npm module onto the REPL
  * @param {string} moduleName Module name
  */
-function installModule(moduleName, wsPath) {
+export function installModule(moduleName, wsPath) {
   console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
   execSync(`npm install --silent ${moduleName}`, { cwd: wsPath });
   console.info('Done!'.grey.italic);
@@ -203,7 +203,7 @@ export function wrapRequire(wsPath) {
  * Add entered line to repl history
  * @param {Object} server
  */
-function persistReplHistory(server, replHistoryPath) {
+function addReplHistoryListener(server, replHistoryPath) {
   process.stdin.on('keypress', (str, key) => {
     if (key.name === 'return') {
       try {
@@ -239,6 +239,6 @@ export function setupReplHistory(replServer, homeDir) {
     let replHistoryPath = path.join(homeDir, '.node_repl_history');
     if (process.env.NODE_REPL_HISTORY) replHistoryPath = process.env.NODE_REPL_HISTORY;
     initializeReplHistory(replServer, replHistoryPath);
-    persistReplHistory(replServer, replHistoryPath);
+    addReplHistoryListener(replServer, replHistoryPath);
   }
 }
