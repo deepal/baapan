@@ -1,43 +1,22 @@
-import os from 'os';
-import path from 'path';
 import { statSync, readFileSync, writeFileSync } from 'fs';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 import { execSync } from 'child_process';
 import { Module } from 'module';
+import path from 'path';
 import 'colors';
-
-let workspacePath = process.env.BAAPAN_WS_PATH;
-let shouldCleanup = false;
-const HOME_DIR = os.homedir();
-if (!process.env.BAAPAN_WS_PATH) {
-  const WORKSPACE_DIR = `.baapan/workspace_${process.pid}_${Date.now()}`;
-  workspacePath = path.join(HOME_DIR, WORKSPACE_DIR);
-  process.env.BAAPAN_WS_PATH = workspacePath;
-  shouldCleanup = true;
-}
-const workspaceModulesDir = path.join(workspacePath, 'node_modules');
-let replHistoryPath = path.join(HOME_DIR, '.node_repl_history');
-
-/**
- * common configs
- */
-export const configParams = {
-  workspacePath,
-  shouldCleanup,
-};
 
 /**
  * Initialize workspace as an npm project
  * @param {string} wsPath Workspace Path
  */
-function initializeWorkspace(wsPath) {
+export function initializeWorkspace(wsPath) {
   try {
     statSync(path.join(wsPath, 'package.json'));
   } catch (err) {
     console.info('Initializing workspace...'.grey);
     if (err.code === 'ENOENT') {
-      execSync('npm init -y --scope baapan', { cwd: workspacePath });
+      execSync('npm init -y --scope baapan', { cwd: wsPath });
     }
   }
 }
@@ -62,10 +41,10 @@ function createWorkspace(wsPath) {
  * Switch to the workspace directory
  * @param {string} wsPath Workspace path
  */
-export function switchToWorkspace(wsPath) {
+export function switchToWorkspace(wsPath, { cleanUp = true } = {}) {
   try {
     // Attempt to clean up any existing workspace
-    if (shouldCleanup) cleanUpWorkspace(wsPath);
+    if (cleanUp) cleanUpWorkspace(wsPath);
   } catch (err) {
     // Do nothing
   } finally {
@@ -80,9 +59,9 @@ export function switchToWorkspace(wsPath) {
  * Install npm module onto the REPL
  * @param {string} moduleName Module name
  */
-function installModule(moduleName) {
+function installModule(moduleName, wsPath) {
   console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
-  execSync(`npm install --silent ${moduleName}`, { cwd: workspacePath });
+  execSync(`npm install --silent ${moduleName}`, { cwd: wsPath });
   console.info('Done!'.grey.italic);
 }
 
@@ -115,7 +94,7 @@ function callerFile() {
  * Check whether the provided module name is a local module
  * @param {string} moduleName
  */
-function isLocalModule(moduleName) {
+export function isLocalModule(moduleName) {
   return /^[/.]/.test(moduleName);
 }
 
@@ -198,7 +177,8 @@ export function baapan(pkgName) {
 /**
  * Wrap require() calls to dynamically install modules on-demand
  */
-export function wrapRequire() {
+export function wrapRequire(wsPath) {
+  const workspaceModulesDir = path.join(wsPath, 'node_modules');
   const originalRequire = Module.prototype.require;
   Module.prototype.require = function (moduleName) {
     // Inject workspace node_modules directory
@@ -211,9 +191,9 @@ export function wrapRequire() {
     } catch (err) {
       if (!moduleInfo.isThirdPartyModule) throw err;
 
-      installModule(moduleInfo.path);
+      installModule(moduleInfo.path, wsPath);
       return originalRequire.apply(this, [
-        path.join(workspacePath, 'node_modules', moduleName),
+        path.join(wsPath, 'node_modules', moduleName),
       ]);
     }
   };
@@ -223,7 +203,7 @@ export function wrapRequire() {
  * Add entered line to repl history
  * @param {Object} server
  */
-function persistReplHistory(server) {
+function persistReplHistory(server, replHistoryPath) {
   process.stdin.on('keypress', (str, key) => {
     if (key.name === 'return') {
       try {
@@ -240,24 +220,25 @@ function persistReplHistory(server) {
  * Initialize baapan repl history
  * @param {Object} server
  */
-function initializeReplHistory(server) {
+function initializeReplHistory(server, replHistoryPath) {
   try {
     readFileSync(replHistoryPath).toString()
       .split('\n')
-      .filter(line => line.trim())
-      .map(line => server.history.push(line));
+      .filter((line) => line.trim())
+      .map((line) => server.history.push(line));
   } catch (err) {
     // can ignore this error.
     // error in persist history should not terminate the execution of code
   }
 }
 
-export function setupReplHistory(replServer) {
+export function setupReplHistory(replServer, homeDir) {
   // repl history should persist only if it's enabled
   if (process.env.NODE_REPL_HISTORY === undefined || process.env.NODE_REPL_HISTORY !== '') {
     // if specified, set user specified path to node repl history
+    let replHistoryPath = path.join(homeDir, '.node_repl_history');
     if (process.env.NODE_REPL_HISTORY) replHistoryPath = process.env.NODE_REPL_HISTORY;
-    initializeReplHistory(replServer);
-    persistReplHistory(replServer);
+    initializeReplHistory(replServer, replHistoryPath);
+    persistReplHistory(replServer, replHistoryPath);
   }
 }
