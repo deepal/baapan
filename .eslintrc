@@ -1,5 +1,9 @@
 {
     "extends": "airbnb",
+    "globals": {
+        "describe": true,
+        "it": true
+    },
     "rules": {
         "global-require": "off",
         "import/no-dynamic-require": "off",
