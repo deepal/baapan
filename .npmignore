@@ -1,4 +1,5 @@
 .babelrc
 ./docs
+./src
 readme.md
 .vscode

@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "lib": [
+            "es2015",
+            "es2016",
+            "es2017"
+        ],
+        "module": "commonjs",
+        "outDir": "build",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "declaration": true
+    },
+    "typeRoots": [
+        "node_modules/@types"
+    ],
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "coverage",
+        ".nyc_output"
+    ]
+}

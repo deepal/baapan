@@ -1,0 +1,48 @@
+{
+    "extends": "tslint-microsoft-contrib",
+    "rules": {
+        "typedef-whitespace": [
+            true,
+            {
+                "call-signature": "nospace",
+                "index-signature": "nospace",
+                "parameter": "nospace",
+                "property-declaration": "nospace",
+                "variable-declaration": "nospace"
+            },
+            {
+                "call-signature": "onespace",
+                "index-signature": "onespace",
+                "parameter": "onespace",
+                "property-declaration": "onespace",
+                "variable-declaration": "onespace"
+        }
+        ],
+        "non-literal-require": false,
+        "whitespace": [
+            true,
+            "check-module"
+        ],
+        "no-import-side-effect": false,
+        "no-relative-imports": false,
+        "no-console": false,
+        "export-name": false,
+        "newline-before-return": false,
+        "newline-per-chained-call": false,
+        "curly": [
+            true,
+            "ignore-same-line"
+        ],
+        "align": false,
+        "no-reserved-keywords": false,
+        "no-suspicious-comment": false,
+        "match-default-export-name": false,
+        "no-implicit-dependencies": [
+            true,
+            "dev"
+        ]
+    },
+    "linterOptions": {
+        "project": true
+    }
+}
