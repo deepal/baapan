@@ -13,6 +13,8 @@ export default class BaapanREPLServer {
       persistWorkspace: false,
       workspacePath: '',
       homeDir: '',
+      historyPath: null,
+      historySize: 1000,
       history: {
         enabled: false,
         path: null,
@@ -22,10 +24,6 @@ export default class BaapanREPLServer {
     this.options = {
       ...defaultOptions,
       ...options,
-      history: {
-        ...defaultOptions.history,
-        ...options.history,
-      },
     };
     this.replServer = null;
   }
@@ -80,7 +78,7 @@ export default class BaapanREPLServer {
 
   initializeReplHistory() {
     try {
-      readFileSync(this.options.history.path).toString()
+      readFileSync(this.options.historyPath).toString()
         .split('\n')
         .filter((line) => line.trim())
         .map((line) => this.replServer.history.push(line));
@@ -107,16 +105,9 @@ export default class BaapanREPLServer {
     }
   }
 
-  setupReplHistory() {
-    // repl history should persist only if it's enabled
-    if (process.env.NODE_REPL_HISTORY === undefined || process.env.NODE_REPL_HISTORY !== '') {
-      // if specified, set user specified path to node repl history
-      this.options.history.path = path.join(this.options.homeDir, '.node_repl_history');
-      if (process.env.NODE_REPL_HISTORY) this.options.history.path = process.env.NODE_REPL_HISTORY;
-
-      this.initializeReplHistory(this.replServer, this.options.history.path);
-      this.addReplHistoryListener(this.replServer, this.options.history.path);
-    }
+  setupReplHistory(historyPath) {
+    this.initializeReplHistory(this.replServer, historyPath);
+    this.addReplHistoryListener(this.replServer, historyPath);
   }
 
   wrapRequire() {
@@ -146,7 +137,7 @@ export default class BaapanREPLServer {
     process.stdin.on('keypress', (_, key) => {
       if (key.name === 'return') {
         try {
-          writeFileSync(this.replHistoryPath, this.replServer.history.join('\n')); // write new server history to repl
+          writeFileSync(this.options.historyPath, this.replServer.history.join('\n')); // write new server history to repl
         } catch (err) {
           // can ignore this error.
           // error in writing history should not terminate the execution of code
@@ -223,9 +214,7 @@ export default class BaapanREPLServer {
   startRepl() {
     this.switchToWorkspace();
     this.wrapRequire();
-    // if history size is specified and is positive, set as max repl history size. default is 1000
-    const replHistorySize = +process.env.NODE_REPL_HISTORY_SIZE || 1000;
-    this.replServer = repl.start({ prompt: '> ', historySize: replHistorySize });
-    this.setupReplHistory();
+    this.replServer = repl.start({ prompt: '> ', historySize: this.options.historySize });
+    if (this.options.historyPath) this.setupReplHistory(this.options.historyPath);
   }
 }

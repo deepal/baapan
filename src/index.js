@@ -5,6 +5,7 @@ import BaapanREPLServer from './baapan';
 import 'colors';
 
 let workspacePath = process.env.BAAPAN_WS_PATH;
+let replHistoryPath = null;
 let persistWorkspace = true;
 const HOME_DIR = os.homedir();
 
@@ -15,15 +16,18 @@ if (!workspacePath) {
   persistWorkspace = false;
 }
 
+if (process.env.NODE_REPL_HISTORY === undefined || process.env.NODE_REPL_HISTORY !== '') {
+  // if specified, set user specified path to node repl history
+  replHistoryPath = path.join(HOME_DIR, '.node_repl_history');
+  if (process.env.NODE_REPL_HISTORY) replHistoryPath = process.env.NODE_REPL_HISTORY;
+}
+
 const baapan = new BaapanREPLServer({
   persistWorkspace,
   workspacePath,
   homeDir: HOME_DIR,
-  history: {
-    enabled: true,
-    path: process.env.NODE_REPL_HISTORY,
-    size: +process.env.NODE_REPL_HISTORY_SIZE,
-  },
+  historyPath: replHistoryPath,
+  historySize: +process.env.NODE_REPL_HISTORY_SIZE || 1000,
 });
 
 process.on('exit', () => {
