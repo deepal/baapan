@@ -40,8 +40,7 @@ $ baapan
 This time I need to generate a random IP address. I can require `chance` to do that.
 
 ```
-Creating workspace...
-Initializing workspace...
+Switching to workspace /Users/deepal/.baapan/workspace_13531_1583696915861
 Workspace loaded!
 > const chance = require('chance').Chance()
 undefined
@@ -55,7 +54,7 @@ Baapan supports [top-level REPL `await`](https://nodejs.org/api/repl.html#repl_a
 e.g.  
 ```
 $ baapan --experimental-repl-await
-Creating workspace...
+Switching to workspace /Users/deepal/.baapan/workspace_13531_1583696915861
 Workspace loaded!
 > await Promise.resolve('It works')
 'It works'
@@ -91,17 +90,17 @@ e.g.
 ```
 $ set process.env.BAAPAN_WS_PATH=D:\nodejs\baapan-modules-repo
 $ baapan
-Creating workspace...
+Switching to workspace D:\nodejs\baapan-modules-repo
 Workspace loaded!
 > process.env.BAAPAN_WS_PATH
 'D:\\nodejs\\baapan-modules-repo'
 ```
 
-#### Unix
+#### Unix/Linux
 
 ```
 $ BAAPAN_WS_PATH=/Users/johndoe/baapan-modules-repo baapan
-Creating workspace...
+Switching to workspace /Users/johndoe/baapan-modules-repo
 Workspace loaded!
 > process.env.BAAPAN_WS_PATH
 '/Users/johndoe/baapan-modules-repo'

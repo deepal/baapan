@@ -3,7 +3,7 @@
 const path = require('path');
 
 const args = process.argv;
-const libPath = path.resolve(__dirname, '../lib/index.js');
+const libPath = path.resolve(__dirname, 'index.js');
 const shouldEnableTopLevelAwait = args.indexOf('--experimental-repl-await') !== -1;
 if (shouldEnableTopLevelAwait) {
   if (process.argv) {
