@@ -1,6 +1,6 @@
 {
   "name": "baapan",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Super Cool NPM Playground right on the Node REPL",
   "bin": "build/entrypoint.js",
   "test": "",
