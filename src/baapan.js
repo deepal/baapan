@@ -15,11 +15,6 @@ export default class BaapanREPLServer {
       homeDir: '',
       historyPath: null,
       historySize: 1000,
-      history: {
-        enabled: false,
-        path: null,
-        size: 1000,
-      },
     };
     this.options = {
       ...defaultOptions,
@@ -30,7 +25,9 @@ export default class BaapanREPLServer {
 
   static callerFile() {
     const orig = Error.prepareStackTrace;
-    Error.prepareStackTrace = function (_, stack) { return stack; }; // eslint-disable-line func-names
+    Error.prepareStackTrace = function (_, stack) { // eslint-disable-line func-names
+      return stack;
+    };
     const err = new Error();
     Error.captureStackTrace(err);
     const { stack } = err;
