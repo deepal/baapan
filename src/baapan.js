@@ -66,7 +66,6 @@ export default class BaapanREPLServer {
     try {
       statSync(path.join(this.options.workspacePath, 'package.json'));
     } catch (err) {
-      console.info('Initializing workspace...'.grey);
       if (err.code === 'ENOENT') {
         execSync('npm init -y --scope baapan', { cwd: this.options.workspacePath });
       }
@@ -74,14 +73,16 @@ export default class BaapanREPLServer {
   }
 
   initializeReplHistory() {
-    try {
-      readFileSync(this.options.historyPath).toString()
-        .split('\n')
-        .filter((line) => line.trim())
-        .map((line) => this.replServer.history.push(line));
-    } catch (err) {
-      // can ignore this error.
-      // error in persist history should not terminate the execution of code
+    if (this.replServer && Array.isArray(this.replServer.history)) {
+      try {
+        readFileSync(this.options.historyPath).toString()
+          .split('\n')
+          .map((line) => line.trim())
+          .forEach((line) => this.replServer.history.push(line));
+      } catch (err) {
+        // can ignore this error.
+        // error in persist history should not terminate the execution of code
+      }
     }
   }
 
@@ -90,12 +91,12 @@ export default class BaapanREPLServer {
      */
   switchToWorkspace() {
     try {
-      // Attempt to clean up any existing workspace
       if (!this.options.persistWorkspace) this.cleanUpWorkspace();
     } catch (err) {
       // Do nothing
     } finally {
-      console.info('Creating workspace...'.grey);
+      console.info(`Switching to workspace ${this.options.workspacePath}`.grey);
+      // If persisted workspace is provided, createWorkspace() will return without creating it again
       this.createWorkspace();
       this.initializeWorkspace();
       console.info('Workspace loaded!'.grey);
@@ -114,12 +115,10 @@ export default class BaapanREPLServer {
     Module.prototype.require = function (moduleName) {
       // Inject workspace node_modules directory
       this.paths.unshift(workspaceModulesDir);
-
-      const moduleInfo = BaapanREPLServer.getModuleInfo(moduleName);
-
       try {
         return originalRequire.apply(this, [moduleName]);
       } catch (err) {
+        const moduleInfo = BaapanREPLServer.getModuleInfo(moduleName);
         if (!moduleInfo.isThirdPartyModule) throw err;
 
         self.installModule(moduleInfo.path);
