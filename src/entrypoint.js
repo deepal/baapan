@@ -13,12 +13,9 @@ const mergedNodeOpts = (
     .filter((opt) => !!opt)
 );
 
-require('child_process').spawn(nodePath, [libPath], {
+require('child_process').spawn(nodePath, [...mergedNodeOpts, libPath], {
   cwd: process.cwd(),
-  env: {
-    ...process.env,
-    NODE_OPTIONS: mergedNodeOpts.join(' '),
-  },
+  env: process.env,
   stdio: 'inherit',
   windowsHide: true,
 });
