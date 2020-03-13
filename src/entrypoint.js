@@ -1,22 +1,21 @@
 #!/usr/bin/env node
 
-const path = require('path');
+import path from 'path';
 
-const args = process.argv;
+const nodePath = process.argv[0];
+const nodeEnvOpts = (process.env.NODE_OPTIONS || '').split(' ');
+const nodeArgs = process.argv.slice(2);
 const libPath = path.resolve(__dirname, 'index.js');
-const shouldEnableTopLevelAwait = args.indexOf('--experimental-repl-await') !== -1;
-if (shouldEnableTopLevelAwait) {
-  if (process.argv) {
-    require('child_process').spawn(process.argv.shift(), [libPath], {
-      cwd: process.cwd(),
-      env: {
-        NODE_OPTIONS: '--experimental-repl-await',
-        ...process.env,
-      },
-      stdio: 'inherit',
-      windowsHide: true,
-    });
-  }
-} else {
-  require(libPath);
-}
+
+const mergedNodeOpts = (
+  [...nodeEnvOpts, ...nodeArgs]
+    .map((opt) => opt.trim())
+    .filter((opt) => !!opt)
+);
+
+require('child_process').spawn(nodePath, [...mergedNodeOpts, libPath], {
+  cwd: process.cwd(),
+  env: process.env,
+  stdio: 'inherit',
+  windowsHide: true,
+});
