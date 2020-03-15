@@ -6,6 +6,7 @@ import { Module } from 'module';
 import path from 'path';
 import 'colors';
 import repl from 'repl';
+import compatibility from './versionCheck';
 
 export default class BaapanREPLServer {
   constructor(options = {}) {
@@ -48,8 +49,14 @@ export default class BaapanREPLServer {
 
   installModule(moduleName) {
     console.info(`Fetching and installing module '${moduleName}' from npm...`.grey.italic);
-    execSync(`npm install --silent ${moduleName}`, { cwd: this.options.workspacePath });
-    console.info('Done!'.grey.italic);
+    try {
+      execSync(`npm install --silent ${moduleName}`, { cwd: this.options.workspacePath });
+      console.info('Done!'.grey.italic);
+    } catch (err) {
+      const e = new Error(`Could not install module! ${err.message || 'Unknown Error'}`.red);
+      e.stack = null;
+      throw e;
+    }
   }
 
   /**
@@ -70,6 +77,7 @@ export default class BaapanREPLServer {
         execSync('npm init -y --scope baapan', { cwd: this.options.workspacePath });
       }
     }
+    mkdirp.sync(path.join(this.options.workspacePath, 'node_modules'));
   }
 
   initializeReplHistory() {
@@ -113,18 +121,21 @@ export default class BaapanREPLServer {
     const workspaceModulesDir = path.join(this.options.workspacePath, 'node_modules');
     const originalRequire = Module.prototype.require;
     Module.prototype.require = function (moduleName) {
-      // Inject workspace node_modules directory
-      this.paths.unshift(workspaceModulesDir);
+      // This is required in node versions >= 12.3.0
+      if (!this.paths.includes(process.cwd())) this.paths.unshift(process.cwd());
+      // The following behaviour is broken in latest node versions.
+      // Skip it if the node version is not supported
+      if (compatibility.isSupportedNodeVersion() && !this.paths.includes(workspaceModulesDir)) {
+        this.paths.unshift(workspaceModulesDir);
+      }
       try {
-        return originalRequire.apply(this, [moduleName]);
+        return originalRequire.call(this, moduleName);
       } catch (err) {
         const moduleInfo = BaapanREPLServer.getModuleInfo(moduleName);
         if (!moduleInfo.isThirdPartyModule) throw err;
 
         self.installModule(moduleInfo.path);
-        return originalRequire.apply(this, [
-          path.join(self.options.workspacePath, 'node_modules', moduleName),
-        ]);
+        return originalRequire.call(this, path.join(self.options.workspacePath, 'node_modules', moduleName));
       }
     };
   }
