@@ -13,9 +13,13 @@ const mergedNodeOpts = (
     .filter((opt) => !!opt)
 );
 
-require('child_process').spawn(nodePath, [...mergedNodeOpts, libPath], {
-  cwd: process.cwd(),
-  env: process.env,
-  stdio: 'inherit',
-  windowsHide: true,
-});
+if (mergedNodeOpts.length) {
+  require('child_process').spawn(nodePath, [...mergedNodeOpts, libPath], {
+    cwd: process.cwd(),
+    env: process.env,
+    stdio: 'inherit',
+    windowsHide: true,
+  });
+} else {
+  require(libPath);
+}
