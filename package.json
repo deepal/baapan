@@ -15,6 +15,7 @@
     "node": "<=12.15.0"
   },
   "dependencies": {
+    "boxen": "4.2.0",
     "colors": "1.4.0",
     "mkdirp": "0.5.1",
     "rimraf": "3.0.0",
