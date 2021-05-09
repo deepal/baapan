@@ -12,7 +12,7 @@ While using Node REPL, if you feel you need an NPM module to quickly test someth
 
 ### Baapan - the life saver
 
-Baapan intercepts `require()` calls and automatically install the module if the module is not locally available. You can `require()` whatever you want, and Baapan will `require()` it for you? Don't you think it's cool??
+Baapan intercepts `require()` calls and automatically installs the module if the module is not locally available. You can `require()` whatever you want, and Baapan will `require()` it for you? Don't you think it's cool??
 
 ![](https://github.com/dpjayasekara/baapan/raw/master/docs/baapan.gif)
 
