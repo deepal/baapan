@@ -1,16 +1,8 @@
 #!/usr/bin/env node
 import os from 'os';
 import path from 'path';
-import compatibility from './versionCheck';
-import * as alert from './alert';
 import BaapanREPLServer from './baapan';
 import 'colors';
-
-// Temporary warning for https://github.com/deepal/baapan/issues/28
-if (!compatibility.isSupportedNodeVersion()) {
-  alert.warn(`Sorry!! Your current Node version (${compatibility.currentNodeVersion}) is not fully supported yet, but we are working on it. \n`
-  + `Please consider switching to Node ${compatibility.requiredNodeVersion} for the moment.`);
-}
 
 let workspacePath = process.env.BAAPAN_WS_PATH;
 let replHistoryPath = null;
