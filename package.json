@@ -17,7 +17,7 @@
   "dependencies": {
     "boxen": "4.2.0",
     "colors": "1.4.0",
-    "mkdirp": "0.5.5",
+    "mkdirp": "0.5.6",
     "rimraf": "3.0.0",
     "semver": "7.1.3"
   },
